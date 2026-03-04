@@ -2,13 +2,18 @@
 // Helper Functions (declared outside if block)
 // ============================================
 var applySmartScriptURL = function(element, afDpValue, baseURL) {
-    var afDpDecoded = decodeURIComponent(afDpValue)
-    //var afDpEncoded = encodeURIComponent(afDpValue);
-    var DpvalueEncode = afDpDecoded
-    .replace(/&amp;amp;/g, '%26')  // HTML entity -> &
-    .replace(/&amp;/g, '%26')      // เผื่อเป็น &amp; จริง
-    .replace(/\(/g, '%28')         // (
-    .replace(/\)/g, '%29')         // )
+    var afDpDecoded = afDpValue;
+    try {
+        afDpDecoded = decodeURIComponent(afDpValue);
+    } catch (e) {
+        // keep original value if malformed URI component
+    }
+
+    afDpDecoded = afDpDecoded
+    .replace(/&amp;amp;/g, '&')
+    .replace(/&amp;/g, '&');
+
+    var DpvalueEncode = encodeURIComponent(afDpDecoded);
  
     var finalURL = baseURL + '&af_dp=' + DpvalueEncode;
     element.href =  finalURL;
@@ -17,8 +22,17 @@ var applySmartScriptURL = function(element, afDpValue, baseURL) {
  
 var extractDeepLink = function(url) {
     if (!url) return null;
+    try {
+        var parsedURL = new URL(url, window.location.href);
+        var uriParam = parsedURL.searchParams.get('URI');
+        if (uriParam) {
+            return decodeURIComponent(uriParam);
+        }
+    } catch (e) {
+        // fallback to regex parsing for non-standard URLs
+    }
     // Pattern 1: URI parameter (e.g., ?URI=scbeasy://...)
-    var uriMatch = url.match(/URI=([^&]+)/);
+    var uriMatch = url.match(/[?&]URI=([^&]+)/);
     if (uriMatch) {
         return decodeURIComponent(uriMatch[1]);
     }
