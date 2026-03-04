@@ -82,24 +82,25 @@
   </div>
 
   <script>
-    (function () {
-      var params = new URLSearchParams(window.location.search);
+    (async function () {
+      const params = new URLSearchParams(window.location.search);
       if (!params.has("utm_source")) return;
 
-      var afScript = document.createElement("script");
-      afScript.src = "appsflyer-smart-script.js";
-      afScript.onload = function () {
-        if (
-          typeof AF_SMART_SCRIPT_RESULT !== "undefined" &&
-          AF_SMART_SCRIPT_RESULT &&
-          AF_SMART_SCRIPT_RESULT.clickURL
-        ) {
-          document.querySelectorAll(".btn-invest").forEach(function (el) {
-            el.href = AF_SMART_SCRIPT_RESULT.clickURL;
-          });
-        }
-      };
-      document.body.appendChild(afScript);
+      const loadScript = (src) =>
+        new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = src;
+          script.onload = resolve;
+          script.onerror = reject;
+          document.body.appendChild(script);
+        });
+
+      try {
+        await loadScript("appsflyer-smart-script.js");
+        await loadScript("dynamic-link-org.js");
+      } catch (err) {
+        console.error("Script load failed:", err);
+      }
     })();
   </script>
 
