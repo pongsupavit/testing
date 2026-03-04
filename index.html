@@ -81,5 +81,27 @@
     * การลงทุนมีความเสี่ยง ผู้ลงทุนควรทำความเข้าใจลักษณะสินค้า เงื่อนไขผลตอบแทน และความเสี่ยงก่อนตัดสินใจลงทุน ผลการดำเนินงานในอดีตมิได้เป็นสิ่งยืนยันผลการดำเนินงานในอนาคต
   </div>
 
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      if (!params.has("utm_source")) return;
+
+      var afScript = document.createElement("script");
+      afScript.src = "appsflyer-smart-script.js";
+      afScript.onload = function () {
+        if (
+          typeof AF_SMART_SCRIPT_RESULT !== "undefined" &&
+          AF_SMART_SCRIPT_RESULT &&
+          AF_SMART_SCRIPT_RESULT.clickURL
+        ) {
+          document.querySelectorAll(".btn-invest").forEach(function (el) {
+            el.href = AF_SMART_SCRIPT_RESULT.clickURL;
+          });
+        }
+      };
+      document.body.appendChild(afScript);
+    })();
+  </script>
+
 </body>
 </html>
