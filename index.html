@@ -83,23 +83,29 @@
 
   <script>
     (async function () {
-      const params = new URLSearchParams(window.location.search);
-      if (!params.has("utm_source")) return;
+      const dynamicLinkBySource = {
+        "scb-current": "dynamic-link-org.js",
+        "scb-edit": "dynamic-link-edit.js",
+      };
+
+      const utmSource = new URLSearchParams(window.location.search).get("utm_source");
+      const dynamicLinkScript = utmSource && dynamicLinkBySource[utmSource];
+      if (!dynamicLinkScript) return;
 
       const loadScript = (src) =>
         new Promise((resolve, reject) => {
           const script = document.createElement("script");
           script.src = src;
           script.onload = resolve;
-          script.onerror = reject;
-          document.body.appendChild(script);
+          script.onerror = () => reject(new Error(`Failed to load ${src}`));
+          (document.body || document.head).appendChild(script);
         });
 
       try {
         await loadScript("appsflyer-smart-script.js");
-        await loadScript("dynamic-link-org.js");
+        await loadScript(dynamicLinkScript);
       } catch (err) {
-        console.error("Script load failed:", err);
+        console.error("Script load failed:", err.message);
       }
     })();
   </script>
