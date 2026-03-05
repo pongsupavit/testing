@@ -1,26 +1,22 @@
-var applySmartScriptURL = function (element, deepLinkValue, baseURL) {
-    var normalizedDeepLink = decodeURIComponent(deepLinkValue);
-    normalizedDeepLink = normalizedDeepLink
+var applySmartScriptURL = function (a, b, c) {
+    var d = decodeURIComponent(b);
+    d = d
         .replace(/&amp;amp;/g, "%26")
         .replace(/&amp;/g, "%26")
-        .replace(/:\/\//g, "%3A%2F%2F")
-        .replace(/\//g, "%2F")
-        .replace(/\(/g, "%28")
-        .replace(/\)/g, "%29");
-    var finalURL = baseURL + "&af_dp=" + normalizedDeepLink;
-    element.href = finalURL;
-    console.log("[SmartScript] Applied:", element.id || "no-id", "→", deepLinkValue);
+        .replace(/\(/g, "%2528")
+        .replace(/\)/g, "%2529");
+    c = c + "&af_dp=" + d;
+    a.href = c;
+    console.log("[SmartScript] Applied:", a.id || "no-id", "→", b);
 },
-extractDeepLink = function (url) {
-    if (!url) return null;
-    var uriMatch = url.match(/URI=([^&]+)/);
-    if (uriMatch) return decodeURIComponent(uriMatch[1]);
-
-    var isDirectDeepLink =
-        url.indexOf("scbeasy://") === 0 || url.indexOf("scb://") === 0;
-    if (isDirectDeepLink) return url.split("&")[0];
-
-    return null;
+extractDeepLink = function (a) {
+    if (!a) return null;
+    var b = a.match(/URI=([^&]+)/);
+    return b
+        ? decodeURIComponent(b[1])
+        : a.indexOf("scbeasy://") === 0 || a.indexOf("scb://") === 0
+            ? a.split("&")[0]
+            : null;
 };
 
 if (AF_SMART_SCRIPT_RESULT) {
