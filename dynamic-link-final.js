@@ -3,6 +3,7 @@ var applySmartScriptURL = function (a, b, c) {
     d = d
         .replace(/&amp;amp;/g, "%26")
         .replace(/&amp;/g, "%26")
+        .replace(/&/g, "%26")
         .replace(/:\/\//g, "%3A%2F%2F")
         .replace(/\//g, "%2F")
         .replace(/\(/g, "%2528")

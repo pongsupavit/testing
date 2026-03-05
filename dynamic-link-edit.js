@@ -3,6 +3,7 @@ var applySmartScriptURL = function (a, b, c) {
     d = d
         .replace(/&amp;amp;/g, "%26")
         .replace(/&amp;/g, "%26")
+        .replace(/&/g, "%26")
         .replace(/\(/g, "%2528")
         .replace(/\)/g, "%2529");
     c = c + "&af_dp=" + d;
